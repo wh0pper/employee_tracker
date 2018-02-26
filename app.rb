@@ -35,9 +35,23 @@ get("/employee/new") do
   erb(:employeeform)
 end
 
+get("/employee/:id") do
+  @employee = Employee.find(params.fetch("id").to_i())
+  # @divisions = Division.all() <- Add when you want to show division employee is part of
+  erb(:employeeinfo)
+end
+
 post("/employee") do
   name = params.fetch("name")
   employee = Employee.new({:name => name, :id => nil})
   employee.save()
+  erb(:success)
+end
+
+patch("/employee/:id") do
+  name = params.fetch("name")
+  @employee = Employee.find(params.fetch("id").to_i())
+  @employee.update({:name => name})
+  # @tasks = Task.all()
   erb(:success)
 end
