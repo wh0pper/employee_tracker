@@ -69,3 +69,15 @@ patch("/division/:id") do
   # @tasks = Task.all()
   erb(:success)
 end
+
+delete("/division/:id") do
+  @division = Division.find(params.fetch("id").to_i())
+  @division.delete()
+  erb(:success)
+end
+
+delete("/employee/:id") do
+  @employee = Employee.find(params.fetch("id").to_i())
+  @employee.delete()
+  erb(:success)
+end
