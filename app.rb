@@ -41,6 +41,12 @@ get("/employee/:id") do
   erb(:employeeinfo)
 end
 
+get("/division/:id") do
+  @division = Division.find(params.fetch("id").to_i())
+  # @employees = Employee.all() <- Add when you want to show employees that are part of that division.
+  erb(:divisioninfo)
+end
+
 post("/employee") do
   name = params.fetch("name")
   employee = Employee.new({:name => name, :id => nil})
@@ -52,6 +58,14 @@ patch("/employee/:id") do
   name = params.fetch("name")
   @employee = Employee.find(params.fetch("id").to_i())
   @employee.update({:name => name})
+  # @tasks = Task.all()
+  erb(:success)
+end
+
+patch("/division/:id") do
+  title = params.fetch("title")
+  @division = Division.find(params.fetch("id").to_i())
+  @division.update({:title => title})
   # @tasks = Task.all()
   erb(:success)
 end
