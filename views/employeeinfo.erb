@@ -3,17 +3,30 @@
 
   <% if @assigned_projects.any?() %>
     <h3>Here are all the projects for this employee:</h3>
+    <table>
     <% @assigned_projects.each do |project| %>
-      <p><%= project.project_name %></p>
+      <tr>
+        <td><%= project.project_name %></td>
+        <td><form action="/employee/<%= @employee.id %>/project" method=post>
+            <input name="_method" type="hidden" value="delete">
+            <input type="hidden" name="project_id" value="<%= project.id %>">
+            <button type="submit" class="remove_project_button">&#10005;</button>
+          </form></td>
+      </tr>
     <% end %>
+    </table>
   <% end %>
-
-  <form action="/employee/<%= @employee.id() %>" method="post">
-    <input name="_method" type="hidden" value="patch">
-    <label for="name">Rename your employee:</label>
-    <input id="name" name="name" type="text">
-
-    <button type="submit">Update</button>
+  <hr>
+  <p>Assign new projects to this employee</p>
+  <form action="/employee/<%= @employee.id %>/project" method="post">
+    <p><select id="project_id" name="project_id">
+      <% @projects.each do |project| %>
+        <% unless @assigned_projects.include?(project) %>
+          <option value="<%=project.id%>"><%= project.project_name %></option>
+        <% end %>
+      <% end %>
+    </select></p>
+    <p><button type="submit">Add Project</button></p>
   </form>
 
 

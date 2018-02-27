@@ -40,6 +40,7 @@ end
 get("/employee/:id") do
   @employee = Employee.find(params.fetch("id").to_i())
   @assigned_projects = @employee.projects
+  @projects = Project.all
   erb(:employeeinfo)
 end
 
@@ -55,6 +56,19 @@ post("/employees") do
   employee.save()
   @employees = Employee.all
   erb(:employees)
+end
+
+post("/employee/:id/project") do
+  employee_id = params.fetch("id")
+  project_id = params.fetch("project_id")
+  current_employee = Employee.find(employee_id)
+  new_project = Project.find(project_id)
+  current_employee.projects.push(new_project)
+  @employees = Employee.all
+  @assigned_projects = current_employee.projects
+  @projects = Project.all
+  @employee = Employee.find(params.fetch("id").to_i())
+  erb(:employeeinfo)
 end
 
 post("/division/:id/employee") do
@@ -99,7 +113,8 @@ patch("/employee/:id") do
   name = params.fetch("name")
   @employee = Employee.find(params.fetch("id").to_i())
   @employee.update({:name => name})
-  # @tasks = Task.all()
+  @assigned_projects = @employee.projects
+  @projects = Project.all
   erb(:employeeinfo)
 end
 
@@ -108,7 +123,6 @@ patch("/division/:id") do
   @division = Division.find(params.fetch("id").to_i())
   @division.update({:title => title})
   @employees = @division.employees()
-  # @tasks = Task.all()
   erb(:divisioninfo)
 end
 
@@ -124,4 +138,14 @@ delete("/employee/:id") do
   @employee.delete()
   @employees = Employee.all
   erb(:employees)
+end
+
+delete("/employee/:id/project") do
+  project = Project.find(params['project_id'])
+  @employee = Employee.find(params['id'])
+  @employee.projects.destroy(project)
+  @employees = Employee.all
+  @assigned_projects = @employee.projects
+  @projects = Project.all
+  erb(:employeeinfo)
 end
