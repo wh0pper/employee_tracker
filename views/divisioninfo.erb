@@ -1,5 +1,25 @@
 <h1><%= @division.title() %></h1>
 
+<% if @employees.any?() %>
+  <h3>Here are all the employees in this division:</h3>
+
+  <ul>
+    <% @employees.each() do |employee| %>
+      <li><%= employee.name %> <a href="/employee/<%= employee.id() %>"></a></li>
+    <% end %>
+  </ul>
+
+  <% else %>
+    <p>There are no employees in this department!</p>
+<% end %>
+
+<form action="/division/<%= @division.id() %>/employee" method="post">
+  <input id="division_id" name="division_id" type="hidden" value="<%= @division_id %>">
+  <label for="name">Employee Name</label>
+  <input id="name" name="name" type="text">
+
+  <button type="submit">Add Employee</button>
+</form>
 
 
 <p>What would you like to do today?</p>

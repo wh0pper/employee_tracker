@@ -5,6 +5,7 @@ also_reload("lib/**/*.rb")
 require("./lib/employee")
 require("./lib/division")
 require("pg")
+require("pry")
 
 get("/") do
   erb(:index)
@@ -43,7 +44,7 @@ end
 
 get("/division/:id") do
   @division = Division.find(params.fetch("id").to_i())
-  # @employees = Employee.all() <- Add when you want to show employees that are part of that division.
+  @employees = @division.employees()
   erb(:divisioninfo)
 end
 
@@ -52,6 +53,16 @@ post("/employee") do
   employee = Employee.new({:name => name, :id => nil})
   employee.save()
   erb(:success)
+end
+
+post("/division/:id/employee") do
+  @division = Division.find(params.fetch("id").to_i())
+  @division_id = @division.id
+  name = params.fetch("name")
+  employee = Employee.new({:name => name, :division_id => @division_id, :id => nil})
+  employee.save()
+  @employees = @division.employees()
+  erb(:divisioninfo)
 end
 
 patch("/employee/:id") do
