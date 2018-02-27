@@ -4,6 +4,7 @@ require("sinatra/activerecord")
 also_reload("lib/**/*.rb")
 require("./lib/employee")
 require("./lib/division")
+require("./lib/project")
 require("pg")
 require("pry")
 
@@ -21,20 +22,20 @@ get("/employees") do
   erb(:employees)
 end
 
-post("/division") do
+get("/projects") do
+  @projects = Project.all()
+  @divisions = Division.all()
+  erb(:projects)
+end
+
+post("/divisions") do
   title = params.fetch("title")
   division = Division.new({:title => title, :id => nil})
   division.save()
-  erb(:success)
+  @divisions = Division.all()
+  erb(:divisions)
 end
 
-get("/division/new") do
-  erb(:divisionform)
-end
-
-get("/employee/new") do
-  erb(:employeeform)
-end
 
 get("/employee/:id") do
   @employee = Employee.find(params.fetch("id").to_i())
@@ -48,21 +49,37 @@ get("/division/:id") do
   erb(:divisioninfo)
 end
 
-post("/employee") do
+post("/employees") do
   name = params.fetch("name")
   employee = Employee.new({:name => name, :id => nil})
   employee.save()
-  erb(:success)
+  @employees = Employee.all
+  erb(:employees)
 end
 
 post("/division/:id/employee") do
   @division = Division.find(params.fetch("id").to_i())
   @division_id = @division.id
   name = params.fetch("name")
-  employee = Employee.new({:name => name, :division_id => @division_id, :id => nil})
-  employee.save()
+  employee = Employee.find_by({:name => name})
+  employee.update({:division_id => @division_id})
   @employees = @division.employees()
   erb(:divisioninfo)
+end
+
+post("/projects") do
+  @divisions = Division.all()
+  project = Project.new({:project_name => params.fetch("project_name"), :id => nil, :description => params.fetch("description"), :due_date => params.fetch("due_date")})
+  project.save
+  @projects = Project.all()
+  erb(:projects)
+end
+
+get("/project/:id") do
+  id = params.fetch('id')
+  @project = Project.find(id)
+  @employees = @project.employees()
+  erb(:projectinfo)
 end
 
 patch("/employee/:id") do
@@ -70,25 +87,28 @@ patch("/employee/:id") do
   @employee = Employee.find(params.fetch("id").to_i())
   @employee.update({:name => name})
   # @tasks = Task.all()
-  erb(:success)
+  erb(:employeeinfo)
 end
 
 patch("/division/:id") do
   title = params.fetch("title")
   @division = Division.find(params.fetch("id").to_i())
   @division.update({:title => title})
+  @employees = @division.employees()
   # @tasks = Task.all()
-  erb(:success)
+  erb(:divisioninfo)
 end
 
 delete("/division/:id") do
   @division = Division.find(params.fetch("id").to_i())
   @division.delete()
-  erb(:success)
+  @divisions = Division.all
+  erb(:divisions)
 end
 
 delete("/employee/:id") do
   @employee = Employee.find(params.fetch("id").to_i())
   @employee.delete()
-  erb(:success)
+  @employees = Employee.all
+  erb(:employees)
 end

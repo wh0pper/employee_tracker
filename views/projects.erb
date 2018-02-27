@@ -1,0 +1,26 @@
+
+<h3>Create a new project:</h3>
+
+<form action="/projects" method="post">
+  <p><label for="project_name">Project Name</label>
+  <input id="project_name" name="project_name" type="text"></p>
+  <p><label for="due_date">Due Date:</label>
+  <input id="due_date" name="due_date" type="date"></p>
+  <p><label for="description">Description:</label>
+  <input id="description" name="description" type="text"></p>
+  <p><select id="division_id" name="division_id">
+    <% @divisions.each do |div| %>
+      <option value="<%=div.id%>"><%= div.title %></option>
+    <% end %>
+  </select></p>
+  <p><button type="submit">Add Project</button></p>
+</form>
+
+
+<p>Here are all your projects:</p>
+
+<ul>
+  <% @projects.each do |project| %>
+    <li><a href="/project/<%= project.id()%>"><%= project.project_name %></li>
+  <% end %>
+</ul>
