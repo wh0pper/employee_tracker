@@ -39,7 +39,7 @@ end
 
 get("/employee/:id") do
   @employee = Employee.find(params.fetch("id").to_i())
-  # @divisions = Division.all() <- Add when you want to show division employee is part of
+  @assigned_projects = @employee.projects
   erb(:employeeinfo)
 end
 
@@ -70,7 +70,9 @@ end
 post("/projects") do
   @divisions = Division.all()
   project = Project.new({:project_name => params.fetch("project_name"), :id => nil, :description => params.fetch("description"), :due_date => params.fetch("due_date")})
-  project.save
+  if !project.save()
+    @error_message = "Please add a description and name for the project that is less than 50 characters long."
+  end
   @projects = Project.all()
   erb(:projects)
 end
@@ -78,7 +80,18 @@ end
 get("/project/:id") do
   id = params.fetch('id')
   @project = Project.find(id)
-  @employees = @project.employees()
+  @assigned_employees = @project.employees()
+  @employees = Employee.all()
+  erb(:projectinfo)
+end
+
+post("/project/:id") do
+  id = params.fetch('id')
+  @project = Project.find(id)
+  @new_employee = Employee.find(params['employee_id'])
+  @project.employees.push(@new_employee)
+  @assigned_employees = @project.employees()
+  @employees = Employee.all()
   erb(:projectinfo)
 end
 

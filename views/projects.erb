@@ -16,6 +16,9 @@
   <p><button type="submit">Add Project</button></p>
 </form>
 
+<% if @error_message %>
+  <h3><%= @error_message %></h3>
+<% end %>
 
 <p>Here are all your projects:</p>
 

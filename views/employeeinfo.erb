@@ -1,6 +1,21 @@
 <h1><%= @employee.name() %></h1>
 <p>What would you like to do today?</p>
 
+  <% if @assigned_projects.any?() %>
+    <h3>Here are all the projects for this employee:</h3>
+    <% @assigned_projects.each do |project| %>
+      <p><%= project.project_name %></p>
+    <% end %>
+  <% end %>
+
+  <form action="/employee/<%= @employee.id() %>" method="post">
+    <input name="_method" type="hidden" value="patch">
+    <label for="name">Rename your employee:</label>
+    <input id="name" name="name" type="text">
+
+    <button type="submit">Update</button>
+  </form>
+
 
 <form action="/employee/<%= @employee.id() %>" method="post">
   <input name="_method" type="hidden" value="patch">

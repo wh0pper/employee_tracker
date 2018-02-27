@@ -1,5 +1,20 @@
 <h1><%= @project.project_name %></h1>
+<h4><%= @project.description %></h4>
 
-<% if @employees.any?() %>
+<% if @assigned_employees.any?() %>
   <h3>Here are all the employees on this project:</h3>
+  <% @assigned_employees.each do |employee| %>
+    <p><%= employee.name %></p>
+  <% end %>
 <% end %>
+
+<form action="/project/<%= @project.id %>" method="post">
+  <p><select id="employee_id" name="employee_id">
+    <% @employees.each do |employee| %>
+      <% unless @assigned_employees.include?(employee) %>
+        <option value="<%=employee.id%>"><%= employee.name %></option>
+      <% end %>
+    <% end %>
+  </select></p>
+  <p><button type="submit">Add employee</button></p>
+</form>
